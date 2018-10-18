@@ -1,0 +1,34 @@
+appname = wapi
+httpport = 9080
+runmode = dev
+autorender = false
+copyrequestbody = true
+EnableDocs = true
+Graceful = true
+
+db.host = 192.168.1.169
+db.port = 3306
+db.user = jiulian
+db.password = jiulian@2018
+db.name = db_wallet
+db.charset = utf8mb4
+
+sessionon = true
+sessionprovider = file
+sessionproviderconfig = "./tmp"
+sessiongcmaxlifetime = 31536000
+sessioncookielifetime = 31536000
+
+cache = redis
+redis_host = "127.0.0.1:6379"
+redis_password = "12345GESAFsfdtewS4G6789"
+cache_expire = 6000
+
+token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+sms_url=http://gw.api.taobao.com/router/rest
+sms_type=normal
+sms_AppKey=46745674567
+sms_AppSecret=678467456745674567
+sms_free_sign_name=一点通
+sms_template_code=SMS_11060567

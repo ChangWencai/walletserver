@@ -1,0 +1,15 @@
+appname = wadmin
+httpport = 8080
+runmode = dev
+
+#
+site.name = "Wallet"
+
+# db
+db.host = 192.168.1.169
+db.user = jiulian
+db.password = "jiulian@2018"
+db.port = 3306
+db.name = db_wallet
+db.prefix = wt_
+db.timezone = Asia/Shanghai

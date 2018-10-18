@@ -1,0 +1,743 @@
+swagger: "2.0"
+info:
+  title: beego Test API
+  description: beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: astaxie@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /dapp/:
+    post:
+      tags:
+      - dapp
+      description: get dapp list
+      operationId: DappController.DappList
+      parameters:
+      - in: body
+        name: body
+        description: The line you want to get
+        required: true
+        schema:
+          $ref: '#/definitions/models.DataLine'
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/.Response'
+  /dapp/{id}:
+    get:
+      tags:
+      - dapp
+      description: get Dapp
+      operationId: DappController.Get All
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to get
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Dapp'
+    put:
+      tags:
+      - dapp
+      description: update the user message
+      operationId: DappController.Update
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Dapp'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - dapp
+      description: delete dapp
+      operationId: DappController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty or id is not exist
+  /dapp/find:
+    post:
+      tags:
+      - dapp
+      description: get game list
+      operationId: DappController.GameList
+      parameters:
+      - in: body
+        name: body
+        description: The game name
+        required: true
+        schema:
+          $ref: '#/definitions/models.GameName'
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.Games'
+  /feedback/:
+    get:
+      tags:
+      - feedback
+      description: get feedbacks
+      operationId: FeedBackController.Get All
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Feedback'
+        "403":
+          description: ""
+    post:
+      tags:
+      - feedback
+      description: user feedback
+      operationId: FeedBackController.FeedBack
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.FeedbackRequestStruct'
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.Feedback'
+  /feedback/{id}:
+    get:
+      tags:
+      - feedback
+      description: get feedback by id
+      operationId: FeedBackController.GetOne
+      parameters:
+      - in: path
+        name: id
+        description: The key for static block
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Feedback'
+        "403":
+          description: :id is empty or id is not valid
+    put:
+      tags:
+      - feedback
+      description: update the feedback
+      operationId: FeedBackController.Update
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Feedback'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - feedback
+      description: delete feedback
+      operationId: FeedBackController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /message/:
+    post:
+      tags:
+      - message
+      description: users message rownum
+      operationId: MessageController.UserMessage
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.UserEmail'
+  /message/{id}:
+    get:
+      tags:
+      - message
+      description: get user message by id
+      operationId: MessageController.GetOne
+      parameters:
+      - in: path
+        name: id
+        description: The key for static block
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.UserEmail'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - message
+      description: update user message
+      operationId: MessageController.Update
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.UserEmail'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - message
+      description: delete user message
+      operationId: MessageController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty or is not valid
+  /user/:
+    get:
+      tags:
+      - user
+      description: get all Users
+      operationId: UserController.GetAll
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+    post:
+      tags:
+      - user
+      description: create users
+      operationId: UserController.CreateUser
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProtoUser'
+      responses:
+        "200":
+          description: '{int} models.User.Id'
+        "403":
+          description: body is empty
+  /user/{id}:
+    get:
+      tags:
+      - user
+      description: get User by id
+      operationId: UserController.GetOne
+      parameters:
+      - in: path
+        name: id
+        description: The key for static block
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: :id is empty
+  /user/{uid}:
+    put:
+      tags:
+      - user
+      description: update the user
+      operationId: UserController.Update
+      parameters:
+      - in: path
+        name: uid
+        description: The uid you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: :uid is not int
+    delete:
+      tags:
+      - user
+      description: delete the user
+      operationId: UserController.Delete
+      parameters:
+      - in: path
+        name: uid
+        description: The uid you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: uid is empty
+  /user/auth:
+    get:
+      tags:
+      - user
+      description: 测试错误码
+      operationId: UserController.认证测试
+      parameters:
+      - in: header
+        name: token
+        description: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} logout success'
+        "401":
+          description: unauthorized
+  /user/edit:
+    post:
+      tags:
+      - user
+      description: user edit nickname
+      operationId: UserController.edit nickname
+      parameters:
+      - in: body
+        name: body
+        description: nickname
+        required: true
+        schema:
+          $ref: '#/definitions/models.NickName'
+      responses:
+        "200":
+          description: '{string} edit success'
+        "401":
+          description: unauthorized
+  /user/forget:
+    post:
+      tags:
+      - user
+      description: user forget password
+      operationId: UserController.forget password
+      parameters:
+      - in: body
+        name: body
+        description: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgetPwd'
+      responses:
+        "200":
+          description: '{string} verify success'
+        "401":
+          description: unauthorized
+  /user/login:
+    post:
+      tags:
+      - user
+      description: Logs user into the system
+      operationId: UserController.Login
+      parameters:
+      - in: formData
+        name: phone
+        description: The phone for login
+        required: true
+        type: string
+      - in: formData
+        name: password
+        description: The password for login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} login success'
+        "403":
+          description: user not exist
+  /user/logout:
+    get:
+      tags:
+      - user
+      description: Logs out current logged in user session
+      operationId: UserController.logout
+      responses:
+        "200":
+          description: '{string} logout success'
+  /user/update:
+    post:
+      tags:
+      - user
+      description: update user password
+      operationId: UserController.update password
+      parameters:
+      - in: body
+        name: body
+        description: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePwd'
+      responses:
+        "200":
+          description: '{string} update success'
+        "401":
+          description: unauthorized
+  /user/verify:
+    post:
+      tags:
+      - user
+      description: test message verify
+      operationId: UserController.message verify
+      parameters:
+      - in: body
+        name: body
+        description: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.PhoneMsg'
+      responses:
+        "200":
+          description: '{string} verify success'
+        "401":
+          description: unauthorized
+definitions:
+  .Response:
+    type: object
+  models.Dapp:
+    title: Dapp
+    type: object
+    properties:
+      catalog:
+        type: integer
+        format: int64
+      create_time:
+        type: integer
+        format: int64
+      dapp_author:
+        type: string
+      dapp_host:
+        type: string
+      dapp_img:
+        type: string
+      description:
+        type: string
+      device_name:
+        type: string
+      id:
+        type: integer
+        format: int64
+      popularity:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int64
+      update_time:
+        type: integer
+        format: int64
+      user_id:
+        type: integer
+        format: int64
+  models.DataLine:
+    title: DataLine
+    type: object
+    properties:
+      line:
+        type: integer
+        format: int64
+  models.Feedback:
+    title: Feedback
+    type: object
+    properties:
+      catalog:
+        type: integer
+        format: int64
+      create_time:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      message:
+        type: string
+      sendid:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int64
+  models.FeedbackRequestStruct:
+    title: FeedbackRequestStruct
+    type: object
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+  models.ForgetPwd:
+    title: ForgetPwd
+    type: object
+    properties:
+      code:
+        type: string
+      new_pwd:
+        type: string
+      phone:
+        type: string
+  models.GameName:
+    title: GameName
+    type: object
+    properties:
+      name:
+        type: string
+  models.Games:
+    title: Games
+    type: object
+    properties:
+      dapp_host:
+        type: string
+      dapp_img:
+        type: string
+      dapp_name:
+        type: string
+      description:
+        type: string
+  models.NickName:
+    title: NickName
+    type: object
+    properties:
+      nick_name:
+        type: string
+      token:
+        type: string
+  models.Object:
+    title: Object
+    type: object
+    properties:
+      ObjectId:
+        type: string
+      PlayerName:
+        type: string
+      Score:
+        type: integer
+        format: int64
+  models.PhoneMsg:
+    title: PhoneMsg
+    type: object
+    properties:
+      phone:
+        type: string
+  models.ProtoUser:
+    title: ProtoUser
+    type: object
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+        format: int64
+      avatar:
+        type: string
+      code:
+        type: string
+      coin:
+        type: integer
+        format: int64
+      email:
+        type: string
+      gender:
+        type: integer
+        format: int64
+      introduce:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      username:
+        type: string
+  models.UpdatePwd:
+    title: UpdatePwd
+    type: object
+    properties:
+      code:
+        type: string
+      new_pwd:
+        type: string
+      old_pwd:
+        type: string
+      phone:
+        type: string
+  models.User:
+    title: User
+    type: object
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+        format: int64
+      avatar:
+        type: string
+      coin:
+        type: integer
+        format: int64
+      created_at:
+        type: integer
+        format: int64
+      created_ip:
+        type: string
+      email:
+        type: string
+      gender:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      introduce:
+        type: string
+      last_login:
+        type: integer
+        format: int64
+      password:
+        type: string
+      phone:
+        type: string
+      salt:
+        type: string
+      status:
+        type: integer
+        format: int64
+      token:
+        type: string
+      updated_at:
+        type: integer
+        format: int64
+      username:
+        type: string
+  models.UserEmail:
+    title: UserEmail
+    type: object
+    properties:
+      address:
+        type: string
+      catalog:
+        type: integer
+        format: int64
+      create_time:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      message:
+        type: string
+      recv_id:
+        type: integer
+        format: int64
+      send_id:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int64
+      subject:
+        type: string
+  models.UserRequest:
+    title: UserRequest
+    type: object
+    properties:
+      page:
+        type: integer
+        format: int64
+      page_size:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int64
+      token:
+        type: string
+tags:
+- name: user
+  description: |
+    Operations about Users
+- name: dapp
+  description: |2
+     DappController operations for Device
+- name: message
+  description: |
+    MessageController operations for User message
+- name: feedback
+  description: |2
+     FeedBackController operations for Device

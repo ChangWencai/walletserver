@@ -1,0 +1,10 @@
+1. git版本安装
+
+2. 打开git bash
+存放在GOPATH指定的目录
+
+3.执行更新命令
+
+go get github.com/astaxie/beego
+go get github.com/beego/bee
+go get github.com/go-sql-driver/mysql

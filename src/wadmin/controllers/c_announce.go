@@ -1,0 +1,156 @@
+package controllers
+
+import (
+	"wadmin/models"
+	"time"
+	"strings"
+	//"github.com/astaxie/beego"
+	"fmt"
+	"github.com/astaxie/beego"
+)
+
+type AnnounceController struct {
+	BaseController
+}
+
+func (self *AnnounceController) List() {
+	fmt.Println("announce list")
+	self.Data["pageTitle"] = "公告管理"
+	self.display()
+}
+
+func (self *AnnounceController) Add() {
+	fmt.Println("announce add")
+	self.Data["pageTitle"] = "新增公告"
+	self.display()
+}
+
+
+func (self *AnnounceController) Edit() {
+	fmt.Println("announce edit")
+	self.Data["pageTitle"] = "编辑公告"
+
+	id, _ := self.GetInt("id", 0)
+	announObj, _ := models.GetAnnounceById(id)
+	row := make(map[string]interface{})
+	row["id"] = announObj.Id
+	row["user_id"] = announObj.UserId
+	row["catalog"] = announObj.Catalog
+	row["subject"] = announObj.Subject
+	row["message"] = announObj.Message
+	row["create_time"] = announObj.CreateTime
+	//row["status"] = announObj.Status
+	self.Data["announce"] = row
+
+	self.display()
+}
+
+func (self *AnnounceController) AjaxSave() {
+	fmt.Println("announce save")
+	announId, _ := self.GetInt("id")
+	if announId == 0 {
+		announObj := new(models.Announce)
+		announObj.UserId = self.userId
+		announObj.Catalog, _ = self.GetInt("catalog")
+		announObj.Subject = strings.TrimSpace(self.GetString("subject"))
+		announObj.Message = strings.TrimSpace(self.GetString("message"))
+		announObj.Status  = 1
+		announObj.CreateTime = time.Now().Unix()
+
+
+		if _, err := models.AddAnnounce(announObj); err != nil {
+			self.ajaxMsg(err.Error(), MSG_ERR)
+		}
+		self.ajaxMsg("", MSG_OK)
+	}
+
+	announObj, _ := models.GetAnnounceById(announId)
+	//修改
+	//announObj.Catalog, _ = self.GetInt("catalog")
+	announObj.Subject = strings.TrimSpace(self.GetString("subject"))
+	announObj.Message = strings.TrimSpace(self.GetString("message"))
+	//announObj.Status, _ = self.GetInt("status")
+
+	if err := announObj.Update(); err != nil {
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("更新成功", MSG_OK)
+}
+
+func (self *AnnounceController) AjaxDel() {
+
+	//announId, _ := self.GetInt("id")
+	//status := strings.TrimSpace(self.GetString("status"))
+	//
+	//announStatus := 0
+	//if status == "enable" {
+	//	announStatus = 1
+	//}
+	//announObj, _ := models.GetAnnounceById(announId)
+	//announObj.Status = announStatus
+	//
+	//if err := announObj.Update(); err != nil {
+	//	self.ajaxMsg(err.Error(), MSG_ERR)
+	//}
+	//self.ajaxMsg("操作成功", MSG_OK)
+
+	announeId, _ := self.GetInt("id")
+	announeObj, _ := models.GetAnnounceById(announeId)
+	announeObj.Status = 0
+	announeObj.Id = announeId
+
+	if err := announeObj.Update(); err != nil {
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("操作成功", MSG_OK)
+}
+
+func (self *AnnounceController) Table() {
+	//列表
+	page, err := self.GetInt("page")
+	if err != nil {
+		page = 1
+	}
+	limit, err := self.GetInt("limit")
+	if err != nil {
+		limit = 30
+	}
+
+	userId, _ := self.GetInt("userId")
+	self.pageSize = limit
+
+	//查询条件
+	filters := make([]interface{}, 0)
+	filters = append(filters, "status", 1)
+	if userId != 0 {
+		filters = append(filters, "user_id__icontains", userId)
+	}
+	result, count := models.GetAnnounceList(page, self.pageSize, filters...)
+	list := make([]map[string]interface{}, len(result))
+	for k, v := range result {
+		row := make(map[string]interface{})
+		row["id"] = v.Id
+		row["user_id"] = "admin"
+		row["subject"] = v.Subject
+		row["message"] = v.Message
+		row["create_time"] = beego.Date(time.Unix(v.CreateTime, 0), "Y-m-d H:i:s")
+		//区分公告种类
+		if 0 == v.Catalog {
+			row["catalog"] = "法律"
+		} else if 1 == v.Catalog {
+			row["catalog"] = "金融"
+		} else if 2 == v.Catalog {
+			row["catalog"] = "用户"
+		} else if 3 == v.Catalog {
+			row["catalog"] = "系统"
+		}
+		//区分公告状态
+		if 1 == v.Status {
+			row["status"] = "已发"
+		} else {
+			row["status"] = "未发"
+		}
+		list[k] = row
+	}
+	self.ajaxList("成功", MSG_OK, count, list)
+}

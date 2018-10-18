@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/src/github.com/BurntSushi/graphics-go" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/astaxie/beego" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/beego/bee" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/bradfitz/gomemcache" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/dgrijalva/jwt-go" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/go-sql-driver/mysql" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/github.com/gomodule/redigo" vcs="Git" />
+  </component>
+</project>

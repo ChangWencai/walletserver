@@ -1,0 +1,89 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
+    <form class="layui-form" action="" method="post" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">Dapp编号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="dapp_id" readonly id="dapp_id" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="{{.dapp_menu.dapp_id}}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">种类</label>
+            <div class="layui-input-inline">
+                <select name="catalog" id="catalog" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="{{.dapp_menu.catalog}}">
+                    <option value="0">banner</option>
+                    <option value="1">游戏</option>
+                    <option value="2">交易所</option>
+                    <option value="3">冒险</option>
+                    <option value="4">其它</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">热度</label>
+            <div class="layui-input-inline">
+                <input type="text" name="popularity" lay-verify="popularity|required" autocomplete="off" placeholder="" class="layui-input" value="{{.dapp_menu.popularity}}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-inline">
+                <input type="text" name="status" lay-verify="status|required" autocomplete="off" placeholder="" class="layui-input" value="{{.dapp_menu.status}}">
+            </div>
+        </div>
+
+        <input type="hidden" id="dappids" name="dappids" value="{{.dapp_menu.dapp_id}}">
+        <input type="hidden" id="id" name="id" value="{{.dapp_menu.id}}">
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var $;
+    layui.config({
+        base : "js/"
+    }).use(['form','element','layer','jquery'],function(){
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var $ = layui.jquery;
+        var dapp_ids_str = "{{.dapp_menu.dapp_id}}"
+        var dapp_ids = dapp_ids_str.split(",");
+
+        form.on('checkbox(dapp_ids)', function(data){
+            if(data.elem.checked==true){
+                dapp_ids.push(data.value)
+            }else{
+                $.each(dapp_ids,function(index,item){
+                    // index是索引值（即下标）   item是每次遍历得到的值；
+                    if(item==data.value){
+                        dapp_ids.splice(index,1);
+                    }
+                });
+            }
+            $("#dappids").val(dapp_ids.join(","));
+        });
+
+        form.on('submit(sub)', function(data){
+            var form_data = $("form").serialize();
+            $.post('{{urlfor "DappMenuController.AjaxSave"}}', form_data, function (out) {
+                if (out.status == 0) {
+                    layer.msg("操作成功",{icon: 1},function () {
+                        window.location.reload()
+                    })
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");
+            return false;
+        });
+        //但是，如果你的HTML是动态生成的，自动渲染就会失效
+        //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+        form.render();
+    });
+</script>

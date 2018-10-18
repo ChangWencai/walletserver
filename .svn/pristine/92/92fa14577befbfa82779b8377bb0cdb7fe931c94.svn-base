@@ -1,0 +1,131 @@
+package controllers
+
+import (
+	"wadmin/models"
+)
+
+type DappMenuController struct {
+	BaseController
+}
+
+func (self *DappMenuController) List() {
+	self.Data["pageTitle"] = "DApp Menu 管理"
+	self.display()
+}
+
+func (self *DappMenuController) Add() {
+	self.Data["pageTitle"] = "新增DApp Menu"
+	self.display()
+}
+
+
+func (self *DappMenuController) Edit() {
+	self.Data["pageTitle"] = "编辑DApp Menu"
+
+	id, _ := self.GetInt("id", 0)
+	dappMenuObj, _ := models.GetDappMenuById(id)
+	row := make(map[string]interface{})
+	row["id"] = dappMenuObj.Id
+	row["dapp_id"] = dappMenuObj.DappId
+	row["catalog"] = dappMenuObj.Catalog
+	row["popularity"] = dappMenuObj.Popularity
+	row["status"] = dappMenuObj.Status
+	self.Data["dapp_menu"] = row
+	self.display()
+}
+
+func (self *DappMenuController) AjaxSave() {
+	dappMenuId, _ := self.GetInt("id")
+	if dappMenuId == 0 {
+		dappMenuObj := new(models.DappMenu)
+		dappMenuObj.DappId, _     = self.GetInt("dapp_id")
+		dappMenuObj.Catalog, _    = self.GetInt("catalog")
+		dappMenuObj.Popularity, _ = self.GetInt("popularity")
+		dappMenuObj.Status = 1
+		//errCheckDappMenuDappId := models.CheckDappMenuDappId(dappMenuObj.DappId)
+		//if true == errCheckDappMenuDappId {
+		//	self.ajaxMsg("The DappId is already exist", MSG_ERR)
+		//}
+		//errCheckDappId := models.CheckDappId(dappMenuObj.DappId)
+		//if false == errCheckDappId {
+		//	self.ajaxMsg("The DappId is not exist in the wt_dapp table", MSG_ERR)
+		//}
+		if _, err := models.AddDappMenu(dappMenuObj); err != nil {
+			self.ajaxMsg(err.Error(), MSG_ERR)
+		}
+		self.ajaxMsg("", MSG_OK)
+	}
+
+	//修改
+	dappMenuObj, _ := models.GetDappMenuById(dappMenuId)
+	dappMenuObj.DappId, _     = self.GetInt("dapp_id")
+	dappMenuObj.Catalog, _    = self.GetInt("catalog")
+	dappMenuObj.Popularity, _ = self.GetInt("popularity")
+	dappMenuObj.Status, _     = self.GetInt("status")
+
+	if err := dappMenuObj.Update(); err != nil {
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("更新成功", MSG_OK)
+}
+
+func (self *DappMenuController) AjaxDel() {
+	dappMenuId, _ := self.GetInt("id")
+	dappMenuObj, _ := models.GetDappMenuById(dappMenuId)
+	dappMenuObj.Status = 0
+	dappMenuObj.Id = dappMenuId
+
+	if err := dappMenuObj.Update(); err != nil {
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("操作成功", MSG_OK)
+}
+
+func (self *DappMenuController) Table() {
+	//列表
+	page, err := self.GetInt("page")
+	if err != nil {
+		page = 1
+	}
+	limit, err := self.GetInt("limit")
+	if err != nil {
+		limit = 30
+	}
+
+	dappId, _ := self.GetInt("dappId")
+	self.pageSize = limit
+
+	//查询条件
+	filters := make([]interface{}, 0)
+	if dappId != 0 {
+		filters = append(filters, "dapp_id__icontains", dappId)
+	}
+	result, count := models.GetDappMenuList(page, self.pageSize, filters...)
+	list := make([]map[string]interface{}, len(result))
+	for k, v := range result {
+		row := make(map[string]interface{})
+		row["id"] = v.Id
+		row["dapp_id"] = v.DappId
+		row["popularity"] = v.Popularity
+		//区分Dapp种类
+		if 0 == v.Catalog {
+			row["catalog"] = "banner"
+		} else if 1 == v.Catalog {
+			row["catalog"] = "游戏"
+		} else if 2 == v.Catalog {
+			row["catalog"] = "交易所"
+		} else if 3 == v.Catalog {
+			row["catalog"] = "冒险"
+		} else if 4 == v.Catalog {
+			row["catalog"] = "其它"
+		}
+		//区分Dapp状态
+		if 1 == v.Status {
+			row["status"] = "上架"
+		} else {
+			row["status"] = "下架"
+		}
+		list[k] = row
+	}
+	self.ajaxList("成功", MSG_OK, count, list)
+}
